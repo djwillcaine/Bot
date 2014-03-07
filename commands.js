@@ -6,15 +6,14 @@ var bals = JSON.parse(fs.readFileSync("bals.json"));
 var data = JSON.parse(fs.readFileSync("data.json"));
 var flirts = data["flirts"];
 var insults = data["insults"];
-var logs = "";
 
-var tinySongKey = "xxx"; // TODO: Add in API keys!
-var wolframKey = "xxx";  // TODO: Add in API keys!
+var tinySongKey = "xxx"; // TODO: Insert API keys!
+var wolframKey =  "xxx"; // TODO: Insert API keys!
 
 var cur_codes = ["usd", "aud", "cad", "chf", "cny", "dkk", "eur", "gbp", "hkd", "jpy", "nzd", "pln", "rub", "sek", "sgd", "thb", "nok", "czk"];
 var btc_codes = {"btc" : 1,  "cbtc" : 100, "mbtc" : 1000, "ubtc" : 1000000, "sat" : 100000000, "satoshi" : 100000000, "satoshis" : 100000000};
 
-var allCmds = ["!commands", "!help", "!search", "!watch", "!listen", "!define", "!ai", "!flirt", "!doge", "!botbal", "!tip", "!say", "!shutdown", "!bal", "!cashout", "!roll", "!save", "!setbal", "!userbals"]
+var allCmds = ["!commands", "!help", "!search", "!watch", "!listen", "!define", "!ai", "!flirt", "!doge", "!botbal", "!tip", "!say", "!shutdown", "!bal", "!cashout", "!roll", "!save", "!setbal", "!userbals", "!donate"];
 
 module.exports = {
 	"!commands"	: commands,
@@ -27,6 +26,7 @@ module.exports = {
 	"!ai"		: ai,
 	"!flirt"	: flirt,
 	"!doge"		: doge,
+	"!donate"	: donate,
 	
 	"!bal"		: bal,
 	"!cashout"	: cashout,
@@ -42,7 +42,7 @@ module.exports = {
 	"!setbal"	: setBal,
 	"!userbals"	: function(user, room, msg, chat, emit){ if(user == "cainy") chat(JSON.stringify(bals).replace(",", ", ")); },
 	incBal		: incBal,
-	getLogs		: function(){ return logs; },
+	getBals		: function(){ return bals; },
 	rooms		:	{
 						"bot"			: allCmds,
 						"dogecoin"		: ["!doge"],
@@ -54,7 +54,6 @@ module.exports = {
 
 
 function bal(user, room, msg, chat, emit){
-	log("!bal");
 	chat(user + ": Your current balance is " + (bals[user.toLowerCase()] ? bals[user.toLowerCase()] : 0) + " DOGE.")
 }
 
@@ -76,7 +75,7 @@ function roll(user, room, msg, chat, emit){
 		chat(user + ": Command usage: !roll <bet>");
 	}else{
 		bet = Math.floor(Number(msg[1]));
-		if(bet > (bals[user.toLowerCase()] ? bals[user.toLowerCase()] : 0) || bet < 5 || bet > 100 || isNan(bet)){
+		if(bet > (bals[user.toLowerCase()] ? bals[user.toLowerCase()] : 0) || bet < 5 || bet > 100 || isNaN(bet)){
 			chat(user + ": Please bet an amount between 5 and 100 DOGE and no higher than your current balance.");
 		}else{
 			net = 0 - bet;
@@ -96,6 +95,22 @@ function roll(user, room, msg, chat, emit){
 			}
 			bals[user.toLowerCase()] += net;
 			log("Updated " + user + "'s balance by " + net + " DOGE.");
+		}
+	}
+}
+
+function donate(user, room, msg, chat, emit){
+	var bal = bals[user.toLowerCase()] ? bals[user.toLowerCase()] : 0;
+	if(msg.length == 1){
+		if(bal > 0){
+			chat(user + ": Thank you very much for your donation of " + bal + " DOGE, it is much appreciated!");
+			bals[user.toLowerCase()] = 0;
+		}
+	}else if(msg.legnth == 2){
+		var amt = Number(msg[1]);
+		if(isNaN(amt) == false && amt <= bal && amt > 0){
+			chat(user + ": Thank you very much for your donation of " + amt + " DOGE, it is much appreciated!");
+			bals[user.toLowerCase()] -= amt;
 		}
 	}
 }
@@ -125,8 +140,7 @@ function doge(user, room, msg, chat, emit){
 }
 
 function help(user, room, msg, chat, emit){
-	chat(user + ": Welcome to bot - the intelligent bot. Please see http://bitbin.it/"
-		+ helplink + " for more information. Type !commands for a list of available commands.");
+	chat(user + ": Welcome to bot - the intelligent bot. Please see http://goo.gl/rlN2lW for more information. Type !commands for a list of available commands.");
 }
 
 function commands(user, room, msg, chat, emit){
@@ -295,5 +309,5 @@ function log(msg){
 	var mins = Math.floor(Date.now() / 60000) % 1440;
 	var time = Math.floor(mins / 60) + ":" + Math.floor(mins % 60);
 	console.log("[" + time + "] " + msg);
-	logs += "[" + time + "] " + msg + "\n";
+	GLOBAL.log += "[" + time + "] " + msg + "\n";
 }

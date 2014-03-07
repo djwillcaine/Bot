@@ -1,3 +1,5 @@
+GLOBAL.log = "";
+
 var io = require('socket.io-client');
 var cmd = require('./commands');
 var http = require('http');
@@ -5,17 +7,18 @@ var socket = io.connect("https://dogechat.net", {secure: true});
 
 var server = http.createServer(function (request, response) {
 	response.writeHead(200, {"Content-Type": "text/plain"});
-	response.end("Botbot is online!\nCurrent Balance: " + total + " DOGE\n" + logs);
+	response.end("Botbot is online!\nCurrent Balance: " + total + " DOGE\n" + JSON.stringify(cmd.getBals()).replace(",", ", ") + "\n" + GLOBAL.log);
 }).listen(80);
 
 var username = "bot";
+var sessionKey = "xxx" // TODO: Insert session key.
 var outputBuffer = [];
 var total = 0;
 var loggedIn = false;
 var logs = ""
 
 socket.on('connect', function(){
-	socket.emit('login', {session: "xxx"}); // TODO: Add in session key!
+	socket.emit('login', {session: sessionKey});
 });
 
 socket.on('loggedin', function(data){
