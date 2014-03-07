@@ -1,0 +1,15 @@
+{
+  "name": "botbot",
+  "subdomain": "botbot",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "socket.io-client": "0.9.x",
+    "xml2js": "x.x.x"
+  },
+  "version": "2.1.0-16",
+  "engines": {
+    "node": "0.10.x"
+  }
+}
