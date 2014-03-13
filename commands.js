@@ -140,7 +140,7 @@ function doge(user, room, msg, chat, emit){
 }
 
 function help(user, room, msg, chat, emit){
-	chat(user + ": Welcome to bot - the intelligent bot. Please see http://goo.gl/rlN2lW for more information. Type !commands for a list of available commands.");
+	chat(user + ": Welcome to bot - the intelligent bot. Please see http://git.io/v-OQUQ for more information. Type !commands for a list of available commands.");
 }
 
 function commands(user, room, msg, chat, emit){
