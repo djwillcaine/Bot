@@ -258,7 +258,7 @@ function escrow(user, room, msg, chat) {
 					transactions[id].sConf = false;
 					transactions[id].rConf = false;
 					transactions[id].sCanc = true;
-					transactions[id].rCanc = ture;
+					transactions[id].rCanc = true;
 					transactions[id].status = "Transaction cancelled. Funds have been transferred back to the senders balance.";
 					chat("Transaction " + id + " cancelled. You have been refunded " + transactions[id].amt + " DOGE from " + transactions[id].recipient + ". Visit #bot to check/withdraw your balance.", "bot:" + transactions[id].sender);
 				} else if (msg[2] == "halt") {
