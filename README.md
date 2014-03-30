@@ -8,8 +8,8 @@ Installation
 
 To run the bot you must first install node.js and preferably npm for installing its dependencies. From a command window located in the root directory type `npm install` to install the required modules.
 
-Instructions for Use
---------------------
+Instructions
+------------
 
 `<par>` is a required parameter, however you do not need to type the <>
 
