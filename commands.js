@@ -69,10 +69,12 @@ function massTip(amt, msg, user, userList, room, tip) {
 		log("Mass tip: " + amt + " from " + user + " => " + each + " doge to " + (userList.length - 1) + " users.");
 		tips = 0;
 		for (i in userList) {
-			if(userList[i] != user.toLowerCase() && tips < 8) {
-				tips++;
-				tip(userList[i], each);
-			}
+			setTimeout(function() {
+				if(userList[i] != user.toLowerCase() && tips < 8) {
+					tips++;
+					tip(userList[i], each);
+				}
+			}, i * 500);
 		}
 	}
 }
