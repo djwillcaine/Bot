@@ -63,19 +63,23 @@ module.exports = {
 	}
 };
 
-function massTip(amt, msg, user, userList, room, tip) {
+function massTip(amt, msg, user, userList, room, tip, chat) {
 	each = Math.floor((amt * 0.9) / (userList.length - 1));
 	if (amt >= 50 && each >= 5) {
 		log("Mass tip: " + amt + " from " + user + " => " + each + " doge to " + (userList.length - 1) + " users.");
 		tips = 0;
-		for (i in userList) {
-			setTimeout(function() {
-				if(userList[i] != user.toLowerCase() && tips < 8) {
-					tips++;
-					tip(userList[i], each);
-				}
-			}, i * 500);
-		}
+		i = 0
+		setInterval(function() {
+			if(userList[i] != user.toLowerCase() && tips < 8) {
+				tips++;
+				tip(userList[i], each);
+			}
+			i++
+		}, 500);
+		donate += amt * 0.02;
+		chat("Mass tip from " + user + ", enjoy! 2% of every mass tip will be donated to our current charity: http://" + charity + " | Raised so far: " + Number(donate.toFixed(2)) + " doge.")
+	} else {
+		tip(user, Math.floor(amt * 0.98), "Refund - Please tip at least 50 doges for a mass tip!");
 	}
 }
 
