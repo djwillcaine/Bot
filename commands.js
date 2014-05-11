@@ -1,5 +1,6 @@
 var fs = require('fs');
 var http = require('http');
+var https = require('https');
 var xmlParse = require('xml2js').parseString;
 
 var bals = JSON.parse(fs.readFileSync("bals.json"));
@@ -382,15 +383,24 @@ function incBal(user, room, amt, chat) {
 }
 
 function doge(user, room, msg, chat) {
-	try {
-		getReq("http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132", [], true, function(res, passback) {
-			var price = res.
-			return .markets.DOGE.lasttradeprice;
-			chat(user + ": Last price of Doge was " + Math.round(price * 100000000) + " satoshis (Cryptsy Price) | #bot");
-		});
-	} catch (err) {
-		chat(user + ": I didn't receive a proper response from the Cryptsy API, please try again later.");
-	}
+	getReq("http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132", true, function(data) {
+		var price = data.return.markets.DOGE.lasttradeprice;
+		if (msg.length <= 2) {
+			i = 1;
+			if (isFinite(Number(msg[1]))) i = Number(msg[1]);
+			chat(user + ": " + i + " DOGE = " + (price * i) + " BTC");
+		} else if (msg.length == 3) {
+			i = 1;
+			if (isFinite(Number(msg[1]))) i = Number(msg[1]);
+			if(cur_codes.indexOf(msg[2]) == -1) {
+				chat(user + ": Unrecognised Currency. Supported fiat currencies are: " + cur_codes.join(", ") + ".");
+			} else {
+				getReq("https://api.bitcoinaverage.com/ticker/" + msg[2].toUpperCase() + "/", true, function(data) {
+					chat(user + ": " + i + " DOGE = " + Number((price * i * data['24h_avg']).toFixed(10)) + " " + msg[2].toUpperCase());
+				}, true);
+			}
+		}
+	});
 }
 
 function help(user, room, msg, chat) {
@@ -434,7 +444,7 @@ function exch(user, room, msg, chat) {
 
 function search(user, room, msg, chat) {
 	if (msg.length >= 2) {
-		getReq("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")), [], true, function(res, passback) {
+		getReq("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")), true, function(res, passback) {
 			var title = res.responseData.results[0].titleNoFormatting;
 			var url = res.responseData.results[0].url;
 			chat(user + ": " + title + " - " + url);
@@ -446,7 +456,7 @@ function search(user, room, msg, chat) {
 
 function watch(user, room, msg, chat) {
 	if (msg.length >= 2) {
-		getReq("http://gdata.youtube.com/feeds/api/videos?q=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")) + "&alt=json&max-results=1", [], true, function(res, passback) {
+		getReq("http://gdata.youtube.com/feeds/api/videos?q=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")) + "&alt=json&max-results=1", true, function(res, passback) {
 			var title = res.feed.entry[0].title.$t;
 			var url = "http://youtu.be/" + res.feed.entry[0].link[0].href.split("&")[0].split("v=")[1];
 			chat(user + ": " + title + " - " + url);
@@ -458,7 +468,7 @@ function watch(user, room, msg, chat) {
 
 function define(user, room, msg, chat) {
 	if (msg.length >= 2) {
-		getReq("http://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")), [], true, function(res, passback) {
+		getReq("http://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")), true, function(res, passback) {
 			try {
 				var word = res.list[0].word;
 				var def = res.list[0].definition;
@@ -474,7 +484,7 @@ function define(user, room, msg, chat) {
 
 function listen(user, room, msg, chat) {
 	if (msg.length >= 2) {
-		getReq("http://tinysong.com/b/" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")) + "?format=json&key=" + tinySongKey, [], true, function(res, passback) {
+		getReq("http://tinysong.com/b/" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")) + "?format=json&key=" + tinySongKey, true, function(res, passback) {
 			try {
 				var title = res.SongName + " by " + res.ArtistName;
 				var url = res.Url;
@@ -498,7 +508,7 @@ function flirt(user, room, msg, chat) {
 
 function ai(user, room, msg, chat) {
 	if (msg.length >= 2) {
-		getReq("http://api.wolframalpha.com/v2/query?input=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")) + "&appid=" + wolframKey, [], false, function(res, passback) {
+		getReq("http://api.wolframalpha.com/v2/query?input=" + encodeURIComponent(msg.splice(1, msg.length - 1).join(" ").replace("&#039;", "'")) + "&appid=" + wolframKey, false, function(res, passback) {
 			xmlParse(res, function(err, result) {
 				try {
 					var answer = result.queryresult.pod[1].subpod[0].plaintext[0];
@@ -528,8 +538,9 @@ function save(callback) {
 	});
 }
 
-function getReq(url, args, json, func) {
-	http.get(url, function(res) {
+function getReq(url, json, func, secure) {
+	protocol = secure ? https : http;
+	protocol.get(url, function(res) {
 		var body = '';
 		res.on('data', function(chunk) {
 			body += chunk;
@@ -543,7 +554,7 @@ function getReq(url, args, json, func) {
 					resp = null;
 				}
 			}
-			func(resp, args);
+			func(resp);
 		});
 	}).on('error', function(e) {
 		console.log("Got error: ", e);
