@@ -50,13 +50,17 @@ There is a 4 in 9 chance of winning a prize.
 
 ### Doge Ticker
 
-To check the latest price of doge use the command below. The price of DogeCoin is taken from Cryptsy and the price of bitcoin for converting into fiat currencies is taken from the [BitcoinAverage Price Index](https://bitcoinaverage.com/).
-To simple get the price of doge in BTC you need not specify any parameters.
+To check the latest price of DogeCoin use the command below. The price of DogeCoin is taken from Cryptsy and the price of Bitcoin for converting into fiat currencies is taken from the [BitcoinAverage Price Index](https://bitcoinaverage.com/).
+To simply get the price of DogeCoin in BTC you need not specify any parameters.
 
     !doge [amount] [currency]
 	
 Where [amount] is the amount in DogeCoin you wish to convert and [currency] is the fiat currency you wish to convert into (if not specified it will be converted to BTC). The two parameters for this command are both optional.
 Supported fiat currency codes are: AUD, BRL, CAD, CHF, CNY, EUR, GBP, HKD, ILS, MXN, NOK, NZD, PLN, RON, RUB, SEK, SGD, TRY, USD and ZAR.
+
+For example if you wanted to check what 1000 DogeCoin was in GBP you could use the command as follows:
+
+    !doge 1000 GBP
 
 This is available in multiple rooms as well as [#bot](http://dogechat.net/join:bot) at the request of certain room owners. If you want this ticker in your room [PM cainy](http://dogechat.net/).
 
