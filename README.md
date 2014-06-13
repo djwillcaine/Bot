@@ -2,6 +2,7 @@ Bot - the intelligent chat bot.
 ======
 
 Introducing bot version 3! A complete re-write has taken place to make the code a little less messy and more easily understood. Furthermore the bot now takes advantage of my module [DogeChat-Bot](https://github.com/cainy393/DogeChat-Bot) to simplify the process.
+
 This is an open source chat bot written in node.js for the website [DogeChat](http://dogechat.net/) found in the [#bot](http://dogechat.net/join:bot) room. It takes advantage of the socket.io-client npm module to communicate with the site as if it were a client using the chat site.
 
 Installation
