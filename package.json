@@ -5,10 +5,10 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "socket.io-client": "0.9.x",
+    "dogechat-bot": "0.1.5",
     "xml2js": "x.x.x"
   },
-  "version": "2.1.0-16",
+  "version": "3.0.0-1",
   "engines": {
     "node": "0.10.x"
   }

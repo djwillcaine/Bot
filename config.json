@@ -1,0 +1,18 @@
+{
+	"credentials"	: {
+		"username"	: "bot",
+		"password"	: "xxx"
+	},
+	"roomCommands"	: {
+		"bot"		: ["!doge", "!help", "!commands", "!bal", "!roll", "!cashout", "!donate", "!watch", "!listen", "!search", "!define", "!ai", "!escrow", "!flirt", "!joke"],
+		"bot:cainy"	: ["!doge", "!help", "!commands", "!bal", "!roll", "!cashout", "!donate", "!watch", "!listen", "!search", "!define", "!ai", "!escrow", "!flirt", "!joke"],
+		"diceroll"	: ["!help", "!commands", "!bal", "!roll", "!cashout", "!donate"],
+		"plaxant"	: ["!doge"],
+		"dogecoin"	: ["!doge"]
+	},
+	"tinySongKey"	: "xxx",
+	"wolframKey"	: "xxx",
+	"currencyCodes"	: [
+		"aud", "brl", "cad", "chf", "cny", "eur", "gbp", "hkd", "ils", "mxn", "nok", "nzd", "pln", "ron", "rub", "sek", "sgd", "try", "usd", "zar"
+	]
+}
