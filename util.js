@@ -8,12 +8,12 @@ setInterval(function(){
 }, 3600000);
 
 exports.save = function(data, callback) {
-	var stream = fs.createWriteStream("db.json", {
+ 	var stream = fs.createWriteStream("db.json", {
 		flags: 'w'
 	});
 	stream.end(JSON.stringify(data));
 	stream.on('finish', function() {
-		log("Saved database to file.");
+		exports.log("Saved database to file.");
 		if (typeof callback === 'function') callback();
 	});
 }
@@ -37,7 +37,7 @@ exports.getReq = function(url, json, func, secure) {
 			func(resp);
 		});
 	}).on('error', function(e) {
-		log("Got error: " + e);
+		exports.log("Got error: " + e);
 	});
 }
 

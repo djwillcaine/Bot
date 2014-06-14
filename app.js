@@ -21,7 +21,7 @@ try {
 	db = {
 		"transactions"	: {},
 		"balances"		: {},
-		"userList"		: {}
+		"userList"		: {},
 		"masstips"		: 0
 	}
 }
@@ -36,7 +36,7 @@ var server = http.createServer(function(request, response) {
 	roomList = "";
 	for (user in db.bals) { userBals += "<tr><td>" + user + "</td><td>" + db.bals[user] + "</td></tr>"; }
 	for (room in db.userList) { roomList += "<tr><th>" + room + "</th><td>" + db.userList[room].join(", ") + "</td></tr>"; }
-	response.end(fs.readFileSync("admin.html").toString().replace("%bal%", bot.getBalance() + " - Mass tips: " + masstips).replace("%userbals%", userBals).replace("%roomlist%", roomList).replace("%logs%", util.getLog()));
+	response.end(fs.readFileSync("admin.html").toString().replace("%bal%", bot.getBalance() + " - Mass tips: " + db.masstips).replace("%userbals%", userBals).replace("%roomlist%", roomList).replace("%logs%", util.getLog()));
 }).listen(80);
 
 
@@ -68,9 +68,7 @@ bot.onChat(function(data) {
 	if (db.userList[data.room].indexOf(data.user.toLowerCase()) != -1) {
 		db.userList[data.room].splice(db.userList[data.room].indexOf(data.user.toLowerCase()), 1);
 	}
-	if (db.userList[data.room].unshift(data.user.toLowerCase()) > 9 ) {
-		db.userList[data.room].pop();
-	}
+	db.userList[data.room].unshift(data.user.toLowerCase())
 });
 
 
@@ -108,7 +106,7 @@ bot.addCommand("!say", function(data) {
 
 bot.addCommand("!save", function(data) {
 	if (admins.indexOf(data.user.toLowerCase()) !== -1) {
-		save(db, function() {
+		util.save(db, function() {
 			bot.chat("Saved database to file.", data.room);
 		});
 	}
@@ -124,7 +122,7 @@ bot.addCommand("!restart", function(data) {
 	if (admins.indexOf(data.user.toLowerCase()) !== -1) {
 		bot.chat("Bot is restarting, please don't tip for the next minute or so.");
 		util.log("Shutting down...");
-		save(db, function() {
+		util.save(db, function() {
 			setTimeout(function() {
 				process.exit(0)
 			}, 3000);
@@ -575,23 +573,24 @@ bot.addCommand("!escrow", function(data) {
 
 // Functions //
 function massTip(amt, user, room) {
-	each = Math.floor((amt * 0.9) / (db.userList.length - 1));
+	toTip = [];
+	for(usr in db.userList[room]) {
+		if (db.userList[room][usr] != user && db.userList[room][usr].substr(-3) != "bot" && toTip.length < 8) {
+			toTip.unshift(db.userList[room][usr]);
+		}
+	}
+	each = Math.floor((amt * 0.9) / toTip.length);
 	if (amt >= 50 && each >= 5) {
-		util.log("Mass tip: " + amt + " from " + user + " => " + each + " doge to " + (db.userList.length - 1) + " users.");
-		tips = 0;
 		i = 0
 		tipping = setInterval(function() {
-			if(db.userList[i] != user.toLowerCase() && tips < 8) {
-				tips++;
-				bot.tip(db.userList[i], each, room, "Mass tip!");
-			}
+			bot.tip(toTip[i], each, room, "Mass tip!");
 			i++;
-			if (i >= userList.length) {
+			if (i >= toTip.length) {
 				clearInterval(tipping);
 			}
 		}, 500);
 		db.masstips += amt;
-		bot.chat("Mass tip from " + user + ", enjoy! Amount of doge tipped so far: " + Number(masstips.toFixed(2)), room);
+		bot.chat("Mass tip from " + user + ", enjoy! Amount of doge tipped so far: " + Number(db.masstips), room);
 	} else {
 		bot.tip(user, Math.floor(amt * 0.98), room, "Refund - Please tip at least 50 doges for a mass tip!");
 	}

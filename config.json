@@ -3,6 +3,9 @@
 		"username"	: "bot",
 		"password"	: "xxx"
 	},
+	"admins"		: [
+		"cainy"
+	],
 	"roomCommands"	: {
 		"bot"		: ["!doge", "!help", "!commands", "!bal", "!roll", "!cashout", "!donate", "!watch", "!listen", "!search", "!define", "!ai", "!escrow", "!flirt", "!joke"],
 		"bot:cainy"	: ["!doge", "!help", "!commands", "!bal", "!roll", "!cashout", "!donate", "!watch", "!listen", "!search", "!define", "!ai", "!escrow", "!flirt", "!joke"],
