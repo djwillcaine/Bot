@@ -32,6 +32,12 @@ To cashout your balance it must be over 5 DOGE. You can either cashout your whol
 
 [amt] is optional, if not specified your whole balance will be tipped to you. If it is specified you will withdraw this amount.
 
+To donate part or all of your balance to the bot to help fund its future development and hosting costs then you can use the donate command shown below.
+
+    !donate [amt]
+
+[amt] is optional, if not specified your whole balance will be donated. If it is specified you will only donate this amount.
+
 ### Dice Roll Game
 
 Once you have some DOGE in your balance you can roll the dice to gamble with it. The command is as follows.
