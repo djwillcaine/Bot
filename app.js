@@ -11,8 +11,7 @@ var fs			= require('fs')
   , flirts		= data["flirts"]
   , insults		= data["insults"]
   , jokes		= data["jokes"]
-  , admins		= ["cainy"]
-  , masstips	= 0;
+  , admins		= config.admins;
 
 
 // Read the database from file //
@@ -23,6 +22,7 @@ try {
 		"transactions"	: {},
 		"balances"		: {},
 		"userList"		: {}
+		"masstips"		: 0
 	}
 }
 
@@ -134,7 +134,7 @@ bot.addCommand("!restart", function(data) {
 
 bot.addCommand("!setbal", function(data) {
 	if (admins.indexOf(data.user.toLowerCase()) !== -1) {
-		db.bals[data.messageArray[0]] = Number(data.messageArray[1]);
+		db.bals[data.messageArray[0].toLowerCase()] = Number(data.messageArray[1]);
 		bot.chat("Updated " + data.messageArray[0] + "'s balance.", data.room);
 	}
 });
@@ -590,7 +590,7 @@ function massTip(amt, user, room) {
 				clearInterval(tipping);
 			}
 		}, 500);
-		masstips += amt;
+		db.masstips += amt;
 		bot.chat("Mass tip from " + user + ", enjoy! Amount of doge tipped so far: " + Number(masstips.toFixed(2)), room);
 	} else {
 		bot.tip(user, Math.floor(amt * 0.98), room, "Refund - Please tip at least 50 doges for a mass tip!");
