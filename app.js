@@ -114,7 +114,8 @@ bot.addCommand("!save", function(data) {
 
 bot.addCommand("!setmasstips", function(data) {
 	if (admins.indexOf(data.user.toLowerCase()) !== -1) {
-		masstips = Number(data.messageArray[0]);
+		db.masstips = Number(data.messageArray[0]);
+		bot.chat("Set total mass tips to " + db.masstips + " Dogecoin.", data.room);
 	}
 });
 
@@ -574,23 +575,19 @@ bot.addCommand("!escrow", function(data) {
 // Functions //
 function massTip(amt, user, room) {
 	toTip = [];
-	for(usr in db.userList[room]) {
-		if (db.userList[room][usr] != user && db.userList[room][usr].substr(-3) != "bot" && toTip.length < 8) {
-			toTip.unshift(db.userList[room][usr]);
+	for(i in db.userList[room]) {
+		if (db.userList[room][i] != user.toLowerCase() && db.userList[room][i].substr(-3) != "bot" && toTip.length < 8) {
+			toTip.push(db.userList[room][i]);
 		}
 	}
 	each = Math.floor((amt * 0.9) / toTip.length);
 	if (amt >= 50 && each >= 5) {
-		i = 0
-		tipping = setInterval(function() {
-			bot.tip(toTip[i], each, room, "Mass tip!");
-			i++;
-			if (i >= toTip.length) {
-				clearInterval(tipping);
-			}
-		}, 500);
-		db.masstips += amt;
 		bot.chat("Mass tip from " + user + ", enjoy! Amount of doge tipped so far: " + Number(db.masstips), room);
+		util.log("Mass tip: " + amt + " from " + user + " -> " + each + " to each of " + toTip.join(", "));
+		for (var i=0; i<toTip.length; i++) {
+			bot.tip(toTip[i], each, room, "Mass tip!");
+		}
+		db.masstips += amt;
 	} else {
 		bot.tip(user, Math.floor(amt * 0.98), room, "Refund - Please tip at least 50 doges for a mass tip!");
 	}
