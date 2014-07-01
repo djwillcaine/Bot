@@ -3,19 +3,27 @@ var http	= require('http')
   , fs		= require('fs')
   , logs	= "";
 
+process.on('uncaughtException', function(err) {
+  exports.log('Uncaught Exception: ' + err);
+});
+
 setInterval(function(){
-	save();
+	exports.save();
 }, 3600000);
 
 exports.save = function(data, callback) {
- 	var stream = fs.createWriteStream("db.json", {
-		flags: 'w'
-	});
-	stream.end(JSON.stringify(data));
-	stream.on('finish', function() {
-		exports.log("Saved database to file.");
-		if (typeof callback === 'function') callback();
-	});
+	try {
+		var stream = fs.createWriteStream("db.json", {
+			flags: 'w'
+		});
+		stream.end(JSON.stringify(data));
+		stream.on('finish', function() {
+			exports.log("Saved database to file.");
+			if (typeof callback === 'function') callback();
+		});
+	} catch(err) {
+		exports.log("Error whilst saving database to file: " + err);
+	}
 }
 
 exports.getReq = function(url, json, func, secure) {

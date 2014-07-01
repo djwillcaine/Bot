@@ -1,3 +1,6 @@
+// Bot by cainy
+// Version 3.0.3
+
 // Initialize variables //
 var fs			= require('fs')
   , dbFile		= fs.readFileSync("db.json")
@@ -228,14 +231,14 @@ bot.addCommand("!donate", function(data) {
 
 bot.addCommand("!doge", function(data) {
 	if (config.roomCommands[data.room].indexOf(data.command) !== -1) {
-		util.getReq("http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132", true, function(res) {
-			var price = res.return.markets.DOGE.lasttradeprice;
+		util.getReq("https://api.mintpal.com/v1/market/stats/DOGE/BTC", true, function(res) {
+			var price = res[0].last_price;
 			if (data.messageArray.length <= 1) {
-				i = 1;
+				var i = 1;
 				if (isFinite(Number(data.messageArray[0]))) i = Number(data.messageArray[0]);
 				bot.chat(data.user + ": " + i + " Dogecoin = " + (price * i) + " BTC", data.room);
 			} else if (data.messageArray.length == 2) {
-				i = 1;
+				var i = 1;
 				if (isFinite(Number(data.messageArray[0]))) i = Number(data.messageArray[0]);
 				if(config.currencyCodes.indexOf(data.messageArray[1]) == -1) {
 					bot.chat(data.user + ": Unrecognised Currency. Supported fiat currencies are: " + config.currencyCodes.join(", ") + ".", data.room);
@@ -245,7 +248,7 @@ bot.addCommand("!doge", function(data) {
 					}, true);
 				}
 			}
-		});
+		}, true);
 	}
 });
 
