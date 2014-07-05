@@ -136,4 +136,3 @@ License
 -------
 
 MIT License
-Copyright (c) Will Caine 2014
