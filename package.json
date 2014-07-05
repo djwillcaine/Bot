@@ -1,6 +1,6 @@
 {
-  "name": "botbot",
-  "subdomain": "botbot",
+  "name": "bbot",
+  "subdomain": "bot",
   "scripts": {
     "start": "node app.js"
   },
