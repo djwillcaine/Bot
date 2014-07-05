@@ -1,5 +1,5 @@
 {
-  "name": "bbot",
+  "name": "bot",
   "subdomain": "bot",
   "scripts": {
     "start": "node app.js"
