@@ -1,15 +1,15 @@
 {
-  "name": "bot",
-  "subdomain": "bot",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "dogechat-bot": "0.1.7",
-    "xml2js": "x.x.x"
-  },
-  "version": "3.0.3",
-  "engines": {
-    "node": "0.10.x"
-  }
+    "name": "bot",
+    "subdomain": "bot",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "dogechat-bot": "0.1.7",
+        "xml2js": "x.x.x"
+    },
+    "version": "3.0.3",
+    "engines": {
+        "node": "0.10.x"
+    }
 }
